@@ -1,3 +1,8 @@
+[![npm](https://img.shields.io/npm/l/express.svg)](https://www.npmjs.com/package/cordova-plugin-pintelinkedinrest)
+
+[![NPM](https://nodei.co/npm/cordova-plugin-linkedin.png?stars&downloads)](https://nodei.co/npm/cordova-plugin-linkedin/)
+[![NPM](https://nodei.co/npm-dl/cordova-plugin-linkedin.png?months=6&height=2)](https://nodei.co/npm/cordova-plugin-linkedin/)
+
 # Cordova LinkedIn Plugin
 A Cordova plugin that lets you use LinkedIn Native SDKs for Android and iOS.
 
@@ -53,9 +58,21 @@ Opens a member's profile in the LinkedIn app.
 ```js
 hasActiveSession(success, error)
 ```
-Checks if there is already an existing active session. This should be used to avoid unecessary login.
+**- - - DEPRECATED - - -**
+This method is deprecated and will be removed in the next major release. Please use `getActiveSession` instead.
+
+Checks if there is already an existing active session. This should be used to avoid unnecessary login.
 
 The success callback function will be called with one argument as a boolean, indicating whether there is an active session.
+
+### getActiveSession
+```js
+getActiveSession(success, error)
+```
+Checks if there is an existing active session. 
+
+The success callback function will be called with an object containing the access token and expiry date (if they exist).
+
 
 
 ## Example
@@ -89,12 +106,22 @@ cordova.plugins.LinkedIn.login(scopes, true, function() {
 
 
 // check for existing session
-cordova.plugin.LinkedIn.hasActiveSession(function(exists) {
-  if (exists) {
+cordova.plugin.LinkedIn.getActiveSession(function(session) {
+  if (session) {
     console.log('We have an active session');
+    console.log('Access token is: ', session.accessToken);
+    console.log('Expires on: ', session.expiresOn);
   } else {
     console.log('There is no active session, we need to call the login method');
   }
 });
 
 ```
+
+<br><br>
+## Contribution
+- **Having an issue**? or looking for support? [Open an issue](https://github.com/zyra/cordova-plugin-linkedin/issues/new) and we will get you the help you need.
+- Got a **new feature or a bug fix**? Fork the repo, make your changes, and submit a pull request.
+
+## Support this project
+If you find this project useful, please star the repo to let people know that it's reliable. Also, share it with friends and colleagues that might find this useful as well. Thank you :smile:

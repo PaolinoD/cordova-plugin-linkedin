@@ -3,6 +3,7 @@ package com.zyramedia.cordova.linkedin;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.telecom.Call;
 import android.util.Log;
 
 import org.apache.cordova.CordovaInterface;
@@ -48,11 +49,14 @@ public class LinkedIn extends CordovaPlugin {
         context = activity.getApplicationContext();
         apiHelper = APIHelper.getInstance(context);
         liSessionManager = LISessionManager.getInstance(context);
-        cordova.setActivityResultCallback(this);
     }
 
     @Override
     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+
+        // make sure we have a registered callback
+        cordova.setActivityResultCallback(this);
+
         if (action.equals("login")) {
             init(args, callbackContext);
         } else if(action.equals("logout")) {
@@ -65,6 +69,8 @@ public class LinkedIn extends CordovaPlugin {
             postRequest(args, callbackContext);
         } else if(action.equals("hasActiveSession")) {
             hasActiveSession(callbackContext);
+        } else if(action.equals("getActiveSession")) {
+            getActiveSession(callbackContext);
         } else {
             return false;
         }
@@ -198,4 +204,25 @@ public class LinkedIn extends CordovaPlugin {
             callbackContext.error(e.getMessage());
         }
     }
+
+    private void getActiveSession(CallbackContext callbackContext) {
+        try {
+            LISession session = liSessionManager.getSession();
+            AccessToken accessToken = session.getAccessToken();
+
+            if (session.isValid()) {
+                JSONObject res = new JSONObject();
+                res.put("accessToken", accessToken.getValue());
+                res.put("expiresOn", accessToken.getExpiresOn());
+                callbackContext.success(res);
+            } else {
+                // send nothing
+                callbackContext.success("");
+            }
+            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, session.isValid()));
+        } catch (Exception e) {
+            callbackContext.error(e.getMessage());
+        }
+    }
+
 }
