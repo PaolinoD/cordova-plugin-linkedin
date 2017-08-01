@@ -73,6 +73,13 @@ Checks if there is an existing active session.
 
 The success callback function will be called with an object containing the access token and expiry date (if they exist).
 
+### isLinkedInAppInstalled
+```js
+isLinkedInAppInstalled(success, error)
+```
+Checks if the LinkedIn official App is installed onn the device. 
+
+The success callback function will be called ONLY if LinkedIn app is installed.
 
 
 ## Example
